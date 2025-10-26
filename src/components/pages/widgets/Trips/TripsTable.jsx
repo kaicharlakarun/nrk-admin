@@ -10,16 +10,18 @@ const TripsTable = ({ trips, handleEdit, handleDelete }) => {
   const formatDateTime = (dateString) => {
     if (!dateString) return "-";
     const d = new Date(dateString);
-    if (isNaN(d)) return dateString;
     return d.toLocaleString("en-IN", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
+      hour12: true, // ✅ enable AM/PM format
+      timeZone: "Asia/Kolkata", // ✅ show in local Indian time
     });
   };
-
+  
+  
   // handle WhatsApp redirect
   const handleSendWhatsApp = async (tripId, sendTo) => {
     try {

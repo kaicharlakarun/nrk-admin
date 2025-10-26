@@ -3,16 +3,16 @@ import { Pencil, Trash2 } from "lucide-react";
 
 const TripsTable = ({ trips, handleEdit, handleDelete }) => {
   // helper function to format only date
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const d = new Date(dateString);
-    if (isNaN(d)) return dateString; // fallback if not a valid date
-    return d.toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
+  // const formatDate = (dateString) => {
+  //   if (!dateString) return "";
+  //   const d = new Date(dateString);
+  //   if (isNaN(d)) return dateString; // fallback if not a valid date
+  //   return d.toLocaleDateString("en-IN", {
+  //     day: "2-digit",
+  //     month: "2-digit",
+  //     year: "numeric",
+  //   });
+  // };
 
    // helper function to format date + time
    const formatDateTime = (dateString) => {
@@ -36,7 +36,7 @@ const TripsTable = ({ trips, handleEdit, handleDelete }) => {
             {[
               "SL.NO",
               "Booking ID",
-              "Booking Date",
+              // "Booking Date",
               "Driver",
               "Vehicle",
               "Customer",
@@ -77,7 +77,7 @@ const TripsTable = ({ trips, handleEdit, handleDelete }) => {
             >
               <td className="px-4 py-2 text-sm">{index + 1}</td>
               <td className="px-4 py-2 text-sm">{trip.bookingId}</td>
-              <td className="px-4 py-2 text-sm">{formatDate(trip.bookingDate)}</td>
+              {/* <td className="px-4 py-2 text-sm">{formatDate(trip.bookingDate)}</td> */}
 
               {/* Driver */}
               <td className="px-4 py-2 text-sm">

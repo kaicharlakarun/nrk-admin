@@ -83,6 +83,10 @@ const EditTripSheet = ({ trip, onClose, onUpdate }) => {
       if (formData.fuelType === "Petrol & CNG") {
         payload.fuelAmount = `Petrol: ${formData.petrolAmount}, CNG: ${formData.cngAmount}`;
       }
+      // ✅ Convert date-time fields to ISO format
+payload.startDate = formData.startDate ? new Date(formData.startDate).toISOString() : "";
+payload.endDate = formData.endDate ? new Date(formData.endDate).toISOString() : "";
+
 
       const res = await fetch(`${BASE_URL}/api/trips/${trip._id}`, {
         method: "PUT",

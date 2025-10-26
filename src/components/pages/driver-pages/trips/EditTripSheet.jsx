@@ -125,10 +125,10 @@ const EditTripSheet = ({ trip, onClose, onUpdate }) => {
             <VehicleSection formData={formData} handleChange={handleChange} vehicles={vehicles} />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <TextInput label="Booking Date" name="bookingDate" type="date" value={formData.bookingDate} onChange={handleChange} />
             <NumberInput label="Driver Beta" name="driverBeta" value={formData.driverBeta} onChange={handleChange} />
-          </div>
+          </div> */}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <TextInput label="Customer Name" name="customerName" value={formData.customerName} onChange={handleChange} />

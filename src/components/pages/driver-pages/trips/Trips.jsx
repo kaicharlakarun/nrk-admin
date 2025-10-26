@@ -12,8 +12,22 @@ const DriverTrips = () => {
   const [search, setSearch] = useState("");
   const [monthFilter, setMonthFilter] = useState("");
   const [yearFilter, setYearFilter] = useState("");
-  const [deleteModal, setDeleteModal] = useState({ open: false, tripId: null, hardDelete: false });
+  const [deleteModal, setDeleteModal] = useState({
+    open: false,
+    tripId: null,
+    hardDelete: false,
+  });
   const [editingTrip, setEditingTrip] = useState(null);
+
+  // Helper: format date as DD/MM/YYYY
+  const formatDate = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
   // Fetch trips for driver
   useEffect(() => {
@@ -47,22 +61,27 @@ const DriverTrips = () => {
     let tempTrips = [...trips];
 
     if (search) {
-      tempTrips = tempTrips.filter(
-        (trip) =>
-          trip.vehicleNumber?.toLowerCase().includes(search.toLowerCase()) ||
-          trip.bookingDate?.includes(search)
-      );
+      const searchLower = search.toLowerCase();
+      tempTrips = tempTrips.filter((trip) => {
+        const vehicleMatch = trip.vehicleNumber?.toLowerCase().includes(searchLower);
+        const dateMatch = formatDate(trip.startDate).includes(search);
+        return vehicleMatch || dateMatch;
+      });
     }
 
     if (monthFilter) {
       tempTrips = tempTrips.filter(
-        (trip) => new Date(trip.bookingDate).getMonth() + 1 === parseInt(monthFilter)
+        (trip) =>
+          trip.startDate &&
+          new Date(trip.startDate).getMonth() + 1 === parseInt(monthFilter)
       );
     }
 
     if (yearFilter) {
       tempTrips = tempTrips.filter(
-        (trip) => new Date(trip.bookingDate).getFullYear() === parseInt(yearFilter)
+        (trip) =>
+          trip.startDate &&
+          new Date(trip.startDate).getFullYear() === parseInt(yearFilter)
       );
     }
 
@@ -72,6 +91,7 @@ const DriverTrips = () => {
   const handleEdit = (trip) => {
     setEditingTrip(trip);
   };
+
   const handleUpdate = (updatedTrip) => {
     setTrips((prev) => prev.map((t) => (t._id === updatedTrip._id ? updatedTrip : t)));
     setFilteredTrips((prev) => prev.map((t) => (t._id === updatedTrip._id ? updatedTrip : t)));
@@ -100,14 +120,18 @@ const DriverTrips = () => {
     }
   };
 
-  if (loading) return <div className="col-span-full">
-  <LoadingSpinner text="Loading Trips..." />
-</div>;
+  if (loading)
+    return (
+      <div className="col-span-full">
+        <LoadingSpinner text="Loading Trips..." />
+      </div>
+    );
   if (error) return <p className="text-red-600">Error: {error}</p>;
 
-  const years = Array.from(new Set(trips.map((t) => new Date(t.bookingDate).getFullYear()))).sort(
-    (a, b) => b - a
-  );
+  // Unique years from startDate
+  const years = Array.from(
+    new Set(trips.map((t) => t.startDate ? new Date(t.startDate).getFullYear() : null).filter(Boolean))
+  ).sort((a, b) => b - a);
 
   return (
     <div className="p-4">
@@ -117,7 +141,7 @@ const DriverTrips = () => {
         <div className="flex flex-wrap gap-2 items-center">
           <input
             type="text"
-            placeholder="Search by vehicle, booking date..."
+            placeholder="Search by vehicle, start date (DD/MM/YYYY)..."
             className="px-3 py-2 border border-green-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -152,16 +176,21 @@ const DriverTrips = () => {
       <TripsTable
         trips={filteredTrips}
         handleEdit={handleEdit}
-        handleDelete={(id) => setDeleteModal({ open: true, tripId: id, hardDelete: false })}
+        handleDelete={(id) =>
+          setDeleteModal({ open: true, tripId: id, hardDelete: false })
+        }
       />
 
       {/* Delete Confirmation Modal */}
       {deleteModal.open && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg w-96 p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Confirm Delete</h3>
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Confirm Delete
+            </h3>
             <p className="text-sm text-gray-600 mb-4">
-              Are you sure you want to delete this trip? This action cannot be undone.
+              Are you sure you want to delete this trip? This action cannot be
+              undone.
             </p>
 
             <div className="flex items-center mb-4 gap-2">
@@ -170,7 +199,10 @@ const DriverTrips = () => {
                 id="hardDelete"
                 checked={deleteModal.hardDelete}
                 onChange={(e) =>
-                  setDeleteModal((prev) => ({ ...prev, hardDelete: e.target.checked }))
+                  setDeleteModal((prev) => ({
+                    ...prev,
+                    hardDelete: e.target.checked,
+                  }))
                 }
                 className="w-4 h-4"
               />
@@ -181,13 +213,17 @@ const DriverTrips = () => {
 
             <div className="flex justify-end gap-3">
               <button
-                onClick={() => setDeleteModal({ open: false, tripId: null, hardDelete: false })}
+                onClick={() =>
+                  setDeleteModal({ open: false, tripId: null, hardDelete: false })
+                }
                 className="px-4 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300"
               >
                 Cancel
               </button>
               <button
-                onClick={() => handleDelete(deleteModal.tripId, deleteModal.hardDelete)}
+                onClick={() =>
+                  handleDelete(deleteModal.tripId, deleteModal.hardDelete)
+                }
                 className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700"
               >
                 Delete
@@ -202,7 +238,7 @@ const DriverTrips = () => {
           trip={editingTrip}
           onClose={() => setEditingTrip(null)}
           onUpdate={handleUpdate}
-          isDriverView={true} // optional prop to hide driver/vehicle selection
+          isDriverView={true}
         />
       )}
     </div>

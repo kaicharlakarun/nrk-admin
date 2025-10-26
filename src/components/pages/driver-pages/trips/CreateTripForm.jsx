@@ -128,7 +128,7 @@ const CreateTripForm = () => {
         </div>
 
         {/* Booking & Driver Beta */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextInput
             label="Booking Date"
             name="bookingDate"
@@ -142,7 +142,7 @@ const CreateTripForm = () => {
             value={formData.driverBeta}
             onChange={handleChange}
           />
-        </div>
+        </div> */}
 
         {/* Customer Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
