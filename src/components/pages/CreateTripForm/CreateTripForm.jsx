@@ -183,7 +183,7 @@ payload.endDate = formData.endDate ? new Date(formData.endDate).toISOString() : 
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextInput label="From Location" name="fromLocation" value={formData.fromLocation} onChange={handleChange} />
-          <TextInput label="End Location" name="endLocation" value={formData.endLocation} onChange={handleChange} />
+          <TextInput label="To Location" name="endLocation" value={formData.endLocation} onChange={handleChange} />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
