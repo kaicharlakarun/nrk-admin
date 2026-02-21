@@ -39,8 +39,13 @@ const Trips = () => {
         if (!res.ok) throw new Error("Failed to fetch trips");
 
         const data = await res.json();
-        setTrips(data.rows || []);
-        setFilteredTrips(data.rows || []);
+         // ✅ SORT BY startDate DESCENDING (latest first)
+      const sortedTrips = (data.rows || []).sort(
+        (a, b) => new Date(b.startDate) - new Date(a.startDate)
+      );
+      setTrips(sortedTrips);
+      setFilteredTrips(sortedTrips);
+        
       } catch (err) {
         setError(err.message);
       } finally {
@@ -82,6 +87,11 @@ const Trips = () => {
         return year === parseInt(yearFilter);
       });
     }
+      // ✅ SORT AGAIN AFTER FILTER
+  tempTrips.sort(
+    (a, b) => new Date(b.startDate) - new Date(a.startDate)
+  );
+
 
     setFilteredTrips(tempTrips);
   }, [search, monthFilter, yearFilter, trips]);
